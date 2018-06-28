@@ -12,8 +12,6 @@ Repository 模式是架构模式，在设计架构时，才有参考价值。应
 - 降低代码出错的几率
 - 让controller代码的可读性大大提高
 
-[TOC]
-
 ## 定义
 
 在 app/Repositorys/Models 目录中定义仓库类文件如下：
@@ -86,15 +84,13 @@ class Entry extends Controller
 
 # 查询规则
 
-[TOC]
-
 ## 定义
 扩展查询规则是为 repository 模式中添加扩展查询选项，比如设置查询的记录条数等。
 在 system/repository/rule/user 目录中定义查询规则类文件如下：
 ```
-namespace system\repository\rule\user;
-use houdunwang\model\repository\Repository;
-use houdunwang\model\repository\Rule;
+namespace App\Repository\Db\Rule\user;
+use houdunwang\repository\Repository;
+use houdunwang\repository\Rule;
 class UserLimitRule extends Rule
 {
     protected $limit;
@@ -116,7 +112,7 @@ public function resetRule();
 
 #### 不执行任何规则
 ```
- public function skipRule($status = true);
+public function skipRule($status = true);
 ```
 
 #### 获取所有规则
