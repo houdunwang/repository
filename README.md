@@ -1,5 +1,7 @@
 # Repository 
 
+项目地址：https://github.com/houdunwang/repository
+
 Repository 模式主要思想是建立一个数据操作代理层，把controller里的数据操作剥离出来。
 
 Repository 模式是架构模式，在设计架构时，才有参考价值。应用 Repository 模式所带来的好处，远高于实现这个模式所增加的代码。只要项目分层，都应当使用这个模式。
@@ -12,7 +14,13 @@ Repository 模式是架构模式，在设计架构时，才有参考价值。应
 - 降低代码出错的几率
 - 让controller代码的可读性大大提高
 
-## 基础接口方法
+## 安装
+
+```
+composer require houdunwang/repository:dev-master
+```
+
+## 接口方法
 ```
 //查找单条
 public function find($id);
