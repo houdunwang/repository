@@ -3,7 +3,7 @@
 use Illuminate\Cache\Repository;
 use \Illuminate\Config\Repository as ConfigRepository;
 
-abstract class BaseCacheDecorator implements BaseRepositoryInterface
+abstract class CacheBaseRepository implements BaseRepositoryInterface
 {
     /**
      * 模型仓库

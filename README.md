@@ -12,128 +12,99 @@ Repository 模式是架构模式，在设计架构时，才有参考价值。应
 - 降低代码出错的几率
 - 让controller代码的可读性大大提高
 
-## 定义
-
-在 app/Repositorys/Models 目录中定义仓库类文件如下：
+## 基础接口方法
 ```
-namespace App\Repositorys\Models;
-use App\User;
-use houdunwang\repository\Repository;
-class UserRepository extends Repository
+//查找单条
+public function find($id);
+
+//获取所有
+public function all();
+
+//分页数据
+public function paginate($page = 15);
+
+//新增模型
+public function create($data);
+
+//更改模型
+public function update($model, $data);
+
+//删除模型
+public function destroy($model);
+
+//根据属性条件查询
+public function findByAttributes(array $attributes);
+
+//多个主键数据
+public function findByMany(array $ids);
+
+//根据属性条件获取多条
+public function getByAttributes(array $attributes, $orderBy = null, $sortOrder = 'asc');
+
+//清除缓存（缓存仓库有效）
+public function clearCache();
+```
+
+## 模型仓库
+模型仓库是对数据模型的管理中间件。
+#### 声明仓库
+```
+namespace App\Repositories\Eloquent;
+
+use Houdunwang\Repository\EloquentBaseRepository;
+
+class ConfigRepository extends EloquentBaseRepository
 {
-    function model()
-    {
-        return User::class;
-    }
+
 }
 ```
 
-### 默认方法
-
-#### 查找所有记录
-```
-public function all($columns = ['*'])
-```
-
-#### 分页查询
-```
-public function paginate($page = 15, $columns = ['*'])
-```
-
-#### 新增记录
-```
-public function create(array $data)
-```
-
-#### 更新记录
-```
-public function update(array $data, $id)
-```
-
-#### 根据主键删除记录
-```
-public function delete($id)
-```
-
-#### 按主键查询记录
-```
-public function find($id, $columns = ['*'])
-```
-
-#### 按指定字段值查询
-```
-public function findBy($field, $value, $columns = ['*'])
-```
-
-## 控制器中使用
+#### 使用仓库
 ```
 namespace App\Http\Controllers;
 
-use namespace App\Repositorys\Models\UserRepository;
-class Entry extends Controller
+use App\Models\Config;
+use App\Repositories\Eloquent\ConfigRepository;
+
+class HomeController extends Controller
 {
-    public function __construct(UserRepository $userRepository)
+    public function __construct(Config $config)
     {
-        dump($userRepository->all());
+        $repository = new ConfigRepository($config);
+        dd($repository->find(1));
     }
 ...
-}
 ```
+## 缓存仓库
+缓存仓库使用与模型仓库区别不大，只是加入了缓存中间层对数据进行缓存处理。
+当模型数据发生变化时自动更新缓存。
 
-# 查询规则
+#### 声明仓库
 
-## 定义
-扩展查询规则是为 repository 模式中添加扩展查询选项，比如设置查询的记录条数等。
-在 system/repository/rule/user 目录中定义查询规则类文件如下：
 ```
-namespace App\Repository\Db\Rule\user;
-use houdunwang\repository\Repository;
-use houdunwang\repository\Rule;
-class UserLimitRule extends Rule
+namespace App\Repositories\Cache;
+use Houdunwang\Repository\CacheBaseRepository;
+class ConfigRepository extends CacheBaseRepository
 {
-    protected $limit;
-    public function __construct($limit = 10)
-    {
-        $this->limit = $limit;
-    }
-    public function apply($model, Repository $repository)
-    {
-        return $model->limit($this->limit);
-    }
+
 }
 ```
-## 默认方法
-#### 重新使用规则
+
+#### 使用仓库
+
 ```
-public function resetRule();
+namespace App\Http\Controllers;
+use App\Models\Config;
+use App\Repositories\Eloquent\ConfigRepository;
+class HomeController extends Controller
+{
+    public function __construct(Config $config)
+    {
+        $repository = new ConfigRepository($config);
+        dd($repository->find(1));
+    }
+...
 ```
 
-#### 不执行任何规则
-```
-public function skipRule($status = true);
-```
 
-#### 获取所有规则
-```
-public function getRule();
-```
 
-#### 获取指定的规则
-```
-public function getByRule(Rule $Rule);
-```
-
-#### 添加规则
-```
-public function pushRule(Rule $Rule);
-```
-
-#### 使用集合中的所有规则
-```
-public function applyRule();
-```
-
-## 控制器中使用
-```
-$userRepository->pushRule(new UserLimitRule())->all();
-```
