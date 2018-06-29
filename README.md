@@ -80,8 +80,6 @@ class Entry extends Controller
 }
 ```
 
-
-
 # 查询规则
 
 ## 定义
